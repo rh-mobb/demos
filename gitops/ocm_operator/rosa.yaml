@@ -1,0 +1,38 @@
+apiVersion: ocm.mobb.redhat.com/v1alpha1
+kind: ROSACluster
+metadata:
+  name: rosa-gitops
+spec:
+  accountID: "660250927410"
+  tags:
+    owner: dscott
+  iam:
+    userRole: arn:aws:iam::660250927410:role/ManagedOpenShift-User-dscott_mobb-Role
+  defaultMachinePool:
+    minimumNodesPerZone: 2
+    instanceType: m5.xlarge
+---
+apiVersion: ocm.mobb.redhat.com/v1alpha1
+kind: MachinePool
+metadata:
+  name: rosa-gitops-mp
+spec:
+  wait: false
+  clusterName: "rosa-gitops"
+  minimumNodesPerZone: 1
+  maximumNodesPerZone: 1
+  instanceType: m5.xlarge
+---
+apiVersion: ocm.mobb.redhat.com/v1alpha1
+kind: LDAPIdentityProvider
+metadata:
+  name: ldap-gitops
+spec:
+  clusterName: rosa-gitops
+  displayName: ldap-test
+  mappingMethod: claim
+  url: ldap://test.example.com:389
+  bindDN: CN=test,OU=Users,DC=example,DC=com
+  bindPassword:
+    name: ldap-gitops
+  attributes: {}
